@@ -1,4 +1,4 @@
-package org.mycompany.myname.Realisation;
+package org.mycompany.myname.Models;
 
 import java.io.File;
 import java.util.ArrayList;
