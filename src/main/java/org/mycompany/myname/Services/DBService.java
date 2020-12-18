@@ -2,77 +2,57 @@ package org.mycompany.myname.Services;
 
 import org.mycompany.myname.Models.UserProfile;
 import org.mycompany.myname.Models.UsersDAO;
-import org.h2.jdbcx.JdbcDataSource;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class DBService {
+    private static SessionFactory sessionFactory = null;
     private static Connection connection;
 
-    static  {
-        connection = getMysqlConnection();
+    static {
+        Configuration configuration = getMySqlConfiguration();
+        sessionFactory = createSessionFactory(configuration);
+    }
+
+    private static Configuration getMySqlConfiguration() {
+        Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(UserProfile.class);
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/tpp?serverTimezone=UTC");
+        configuration.setProperty("hibernate.connection.username", "root");
+        configuration.setProperty("hibernate.connection.password", "root");
+        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+        return configuration;
+    }
+
+    private static SessionFactory createSessionFactory(Configuration configuration) {
+        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+        builder.applySettings(configuration.getProperties());
+        ServiceRegistry serviceRegistry = builder.build();
+        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     public static UserProfile getUser(String login) {
-        try {
-            return (new UsersDAO(connection).get(login));
-        } catch (SQLException e) {
-            return null;
-        }
+        Session session = sessionFactory.openSession();
+        UserProfile result = new UsersDAO(session).getUser(login);
+        session.close();
+        return result;
     }
 
     public static void addUser(UserProfile userProfile) {
-        try {
-            addUser(userProfile.getLogin(), userProfile.getPass(), userProfile.getEmail());
-        } catch (DBException ignored) { }
-    }
-
-    public static void addUser(String login, String pass, String mail) throws DBException {
-        try {
-            connection.setAutoCommit(false);
-            UsersDAO dao = new UsersDAO(connection);
-            dao.createTable();
-            dao.insertUser(login, pass, mail);
-            connection.commit();
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ignore) {
-            }
-            throw new DBException(e);
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException ignore) {
-            }
-        }
-    }
-
-    public static Connection getMysqlConnection() {
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
-
-            StringBuilder url = new StringBuilder();
-
-            url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("tpp?").                 //db name
-                    append("user=root&").           //login
-                    append("password=root&").       //password
-                    append("serverTimezone=UTC");   //serverTimezone
-
-            System.out.println("URL: " + url + "\n");
-
-            Connection connection = DriverManager.getConnection(url.toString());
-            return connection;
-        } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        UsersDAO dao = new UsersDAO(session);
+        dao.insertUser(userProfile.getLogin(), userProfile.getPass(), userProfile.getEmail());
+        transaction.commit();
+        session.close();
     }
 }

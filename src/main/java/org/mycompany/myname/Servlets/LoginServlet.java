@@ -19,8 +19,6 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String login = req.getParameter("login");
         String pass = req.getParameter("pass");
-        // UserProfile user = AccountService.getUserByLogin(login);
-        // UserProfile user = AccountService.getUserBySessionId(req.getSession().getId());
         UserProfile user = DBService.getUser(login);
 
         if (user == null){

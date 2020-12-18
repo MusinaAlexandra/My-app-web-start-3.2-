@@ -2,7 +2,6 @@ package org.mycompany.myname.Servlets;
 
 
 import org.mycompany.myname.Models.UserProfile;
-import org.mycompany.myname.Services.AccountService;
 import org.mycompany.myname.Services.DBService;
 
 import javax.servlet.ServletException;
