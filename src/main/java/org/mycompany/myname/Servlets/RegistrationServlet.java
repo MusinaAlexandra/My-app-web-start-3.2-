@@ -3,6 +3,7 @@ package org.mycompany.myname.Servlets;
 
 import org.mycompany.myname.Models.UserProfile;
 import org.mycompany.myname.Services.AccountService;
+import org.mycompany.myname.Services.DBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,11 +28,12 @@ public class RegistrationServlet extends HttpServlet  {
             return;
         }
 
-        AccountService.addNewUser(new UserProfile(login, pass, email));
+        // AccountService.addNewUser(new UserProfile(login, pass, email));
+        DBService.addUser(new UserProfile(login, pass, email));
 
-        File file = new File("c:\\aaa\\"+login);
+        File file = new File("c:\\tpp\\"+login);
         file.mkdirs();
-        String path = "http://localhost:8888/?path=c:\\aaa\\"+login+"/";
+        String path = "http://localhost:8888/?path=c:\\tpp\\"+login+"/";
         resp.sendRedirect(new String(path.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
     }
 }

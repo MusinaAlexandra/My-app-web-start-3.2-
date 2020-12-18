@@ -26,7 +26,7 @@ public class FileServlet extends HttpServlet {
         try {
             String path = req.getParameter("path");
             path = new String(path.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-            if (path.contains("c:\\aaa\\"+profile.getLogin())) {
+            if (path.contains("c:\\tpp\\"+profile.getLogin())) {
 
                 AllLists lists = new AllLists(path);
 
@@ -37,14 +37,12 @@ public class FileServlet extends HttpServlet {
                 getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
 
             } else {
-                req.setAttribute("path", "c:\\aaa\\"+profile.getLogin());
+                req.setAttribute("path", "c:\\tpp\\"+profile.getLogin());
                 req.getRequestDispatcher("/wrong.jsp").forward(req, resp);
             }
         }catch (NullPointerException ex) {
-            req.setAttribute("path", "c:\\aaa\\");
+            req.setAttribute("path", "c:\\tpp\\");
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
         }
     }
-
-
 }

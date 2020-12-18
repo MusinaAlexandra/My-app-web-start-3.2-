@@ -14,7 +14,7 @@ public class AllLists {
         fillLists();
     }
 
-    public void fillLists(){
+    private void fillLists(){
         File allFiles = new File(this.path);
         parentPath=allFiles.getParent();
 

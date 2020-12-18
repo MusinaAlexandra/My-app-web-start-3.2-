@@ -14,6 +14,9 @@
         <title>FileServlet</title>
     </head>
     <body>
+        <form action="authorization" method="delete">
+            <input type="submit" value="Выход">
+        </form>
         <div>
             <%
                 out.println("<a href=\'?path=" + parentPath + "/'>" + parentPath + "</a>" + "<br>");
