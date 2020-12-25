@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         AccountService.addSession(req.getSession().getId(),user);
-        String path = "http://localhost:8888/?path=c:\\tpp\\"+login;
+        String path = "http://localhost:8888/?path=c:\\tpp\\"+login+"/";
         resp.sendRedirect(new String(path.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
     }
 

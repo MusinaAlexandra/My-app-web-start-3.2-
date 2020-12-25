@@ -32,7 +32,7 @@ public class RegistrationServlet extends HttpServlet  {
 
         File file = new File("c:\\tpp\\"+login);
         file.mkdirs();
-        String path = "http://localhost:8888/?path=c:\\tpp\\"+login+"/";
+        String path = "http://localhost:8888/authorization";
         resp.sendRedirect(new String(path.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
     }
 }
