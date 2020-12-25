@@ -27,7 +27,6 @@ public class RegistrationServlet extends HttpServlet  {
             return;
         }
 
-        // AccountService.addNewUser(new UserProfile(login, pass, email));
         DBService.addUser(new UserProfile(login, pass, email));
 
         File file = new File("c:\\tpp\\"+login);
